@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+		
+		<!-- - MySQL 데이터베이스 DataSource 설정 코드입니다. -->
+			<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+<!--  	
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/example?serverTimezone=Asia/Seoul"></property> 
+		<property name="username" value="root"></property>  
+-->
+ 	
+ 	<!--  log4j jdbc 적용시-->
+	<!-- - driverClassName는 값을 "net.sf.log4jdbc.sql.jdbcapi.DriverSpy"로 변경해줍니다. -->
+	<!-- - jdbcUrl 경우 값을 기존 경로 중간에 log4jdbc 문자열을 추가해주면 됩니다. -->
+ 		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
+		<property name="jdbcUrl" value="jdbc:log4jdbc:mysql://localhost:3306/example?serverTimezone=Asia/Seoul"></property> 
+		<property name="username" value="root"></property>
+		<property name="password" value="1234"></property>
+	</bean>	
+	<!--   Oracle 데이터 베이스 DataSource 설정 코드 
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+ 		<property name="driverClassName" value="oracle.jdbc.pool.OracleDataSource"></property>
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@URL주소:1521:시드명"></property> 
+          Oracle 11g 경우 value="jdbc:oracle:thin:@URL주소:1521:XE" 
+          Oracle 19  경우 value="jdbc:oracle:thin:@URL주소:1521:orcl" 
+		<property name="username" value="계정명"></property>
+		<property name="password" value="비밀번호"></property>
+	</bean>	
+	-->
+	
+	
+	<bean id="datasource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+		<constructor-arg ref="hikariConfig"></constructor-arg>
+	</bean>
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="datasource"></property>
+	</bean>	
+</beans>
